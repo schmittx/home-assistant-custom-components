@@ -19,7 +19,7 @@ This project is originally based on [@343max's eero-client project](https://gith
 4. Follow the prompts
 5. Once setup is finished, use the integration options to configure polling interval and desired Eero devices/profiles/clients
 
-#### Remaining Work
+## Remaining Work
 
 These features are in process of being implemented.
 
@@ -28,7 +28,7 @@ These features are in process of being implemented.
 - Switches for Eero labs features (i.e. band steering, local DNS caching, etc.)
 - Eero beacon nightlight control
 
-#### Home Assistant Native Integration
+## Home Assistant Native Integration
 
 The following will need to be addressed before a PR against Home Assistant should be created. I don't plan on attacking this right away as my time is limited, any help would be appreciated.
 

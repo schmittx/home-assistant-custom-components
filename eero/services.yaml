@@ -1,0 +1,11 @@
+# Custom Component
+
+restart_eero:
+  description: Restart an Eero.
+  fields:
+    eero_name:
+      description: (Optional) Name(s) of Eero(s) to restart. Defaults to all Eeros if not specified.
+      example: "Living Room"
+    network_name:
+      description: (Required) Name of network in which desired Eeros are located. Useful for accounts with multiple linked networks containing Eeros with the same name.
+      example: "Eero Wi-Fi"

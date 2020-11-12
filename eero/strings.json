@@ -1,0 +1,50 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "The desired network is already configured"
+        },
+        "error": {
+            "invalid_code": "Invalid code",
+            "invalid_login": "Invalid login"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "login": "Login (email or SMS phone number)"
+                },
+                "description": "Enter the email address or SMS phone number (including country code) associated with your account.",
+                "title": "Login to Eero account"
+            },
+            "verify": {
+                "data": {
+                    "code": "Verification code"
+                },
+                "description": "Enter the verification code that was sent to your email or phone number.",
+                "title": "Verify Eero account"
+            },
+            "network": {
+                "data": {
+                    "network_name": "Network name"
+                },
+                "description": "Select the desired Eero network. Multiple networks are supported by adding another instance of the Eero integration.",
+                "title": "Confirm Eero network"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "resources": {
+                "data": {
+                    "save_responses": "Save server responses to 'custom_components/eero/responses'",
+                    "scan_interval": "Polling interval",
+                    "eeros": "Eero devices",
+                    "profiles": "Profiles",
+                    "wired_clients": "Wired clients",
+                    "wireless_clients": "Wireless clients"
+                },
+                "description": "A new device entry and all applicable entities will be created within Home Assistant for each selected Eero device, profile, and client. Individual entities can then be disabled as desired.\n\nDeselecting an item will remove that device entry and all associated entities.",
+                "title": "Additional options for Eero"
+            }
+        }
+    }
+}

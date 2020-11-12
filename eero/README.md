@@ -6,10 +6,11 @@ This project is originally based on [@343max's eero-client project](https://gith
 
 ## Features
 
-- Full config flow implementation, no need for scripts or YAML
+- Full config flow implementation for setup and options, no need for scripts or YAML
 - Sensors for available updates, public IP, speed test results, connected client count, and more
 - Device trackers for wired and wireless clients
-- Switches for guest network, LED status light, and connection pausing; additional switches for Eero Secure features (i.e. ad blocking, advanced security, etc.) if subscription exists
+- Switches for guest network, status light, and connection pausing; additional switches for Eero Secure features (i.e. ad blocking, advanced security, etc.) if subscription exists
+- Service to restart a specific (or all) Eero devices
 
 ## Setup Process
 

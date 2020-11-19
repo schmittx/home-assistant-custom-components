@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "The sensor/argument combination is already configured"
+        },
+        "error": {
+            "no_arg": "Argument is required for this sensor type"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "type": "Type",
+                    "arg": "Argument"
+                },
+                "description": "Select the sensor type and enter associated argument (if required).",
+                "title": "Setup system monitor"
+            }
+        }
+    }
+}

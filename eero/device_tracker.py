@@ -7,7 +7,7 @@ from homeassistant.components.device_tracker.const import SOURCE_TYPE_ROUTER
 from . import EeroEntity
 from .const import (
     CONF_CLIENTS,
-    CONF_NETWORK,
+    CONF_NETWORKS,
     DATA_COORDINATOR,
     DOMAIN as EERO_DOMAIN,
 )
@@ -17,17 +17,20 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up a Eero device tracker based on a config entry."""
-    conf = hass.data[EERO_DOMAIN][entry.entry_id]
-    conf_network = conf[CONF_NETWORK]
-    conf_clients = conf[CONF_CLIENTS]
-    coordinator = conf[DATA_COORDINATOR]
+    entry = hass.data[EERO_DOMAIN][entry.entry_id]
+    conf_networks = entry[CONF_NETWORKS]
+    conf_clients = entry[CONF_CLIENTS]
+    coordinator = entry[DATA_COORDINATOR]
 
     def get_device_trackers():
         """Get the Eero device trackers."""
         device_trackers = []
 
-        for client in conf_clients:
-            device_trackers.append(EeroDeviceTracker(coordinator, conf_network.id, client.id, "device_tracker"))
+        for network in coordinator.data.networks:
+            if network.id in conf_networks:
+                for client in network.clients:
+                    if client.id in conf_clients:
+                        device_trackers.append(EeroDeviceTracker(coordinator, network, client, "device_tracker"))
 
         return device_trackers
 

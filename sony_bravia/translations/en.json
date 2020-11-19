@@ -1,0 +1,23 @@
+{
+    "title": "Sony BRAVIA",
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP address",
+                    "psk": "Pre-Shared Key",
+                    "ext_speaker": "External Speaker Connected",
+                    "time_format": "Time Format"
+                },
+                "description": "Connect to a Sony BRAVIA TV.",
+                "title": "Sony BRAVIA"
+            }
+        },
+        "error": {
+            "connect": "Connection error, please check your host and PSK"
+        },
+        "abort": {
+            "already_configured": "The host is already configured."
+        }
+    }
+}

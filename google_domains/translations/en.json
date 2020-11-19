@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "The domain is already configured"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "domain": "Domain",
+                    "username": "Username",
+                    "password": "Password"
+                },
+                "description": "Enter the domain and associated credentials.",
+                "title": "Setup Google Domains"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "timeout": {
+                "data": {
+                    "interval": "Update interval (minutes)",
+                    "timeout": "Timeout (seconds)"
+                },
+                "description": "Adjust the default update interval and timeout values.",
+                "title": "Options for Google Domains"
+            }
+        }
+    }
+}

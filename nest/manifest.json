@@ -1,0 +1,11 @@
+{
+  "domain": "nest",
+  "name": "Nest",
+  "config_flow": true,
+  "documentation": "https://www.home-assistant.io/integrations/nest",
+  "requirements": [
+    "git+https://github.com/schmittx/python-nest.git@dev#python-nest==4.1.2",
+    "pillow==7.1.2"
+  ],
+  "codeowners": ["@awarecan"]
+}

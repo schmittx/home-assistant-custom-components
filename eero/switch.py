@@ -7,7 +7,7 @@ from . import EeroEntity
 from .const import (
     CONF_CLIENTS,
     CONF_EEROS,
-    CONF_NETWORK,
+    CONF_NETWORKS,
     CONF_PROFILES,
     DATA_COORDINATOR,
     DOMAIN as EERO_DOMAIN,
@@ -20,9 +20,13 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 BASIC_TYPES = {
+    "band_steering": [[TYPE_NETWORK], "Band Steering"],
     "guest_network_enabled": [[TYPE_NETWORK], "Guest Network"],
     "led_on": [[TYPE_EERO], "LED Status Light"],
     "paused": [[TYPE_CLIENT, TYPE_PROFILE], "Paused"],
+    "sqm": [[TYPE_NETWORK], "Smart Queue Management"],
+    "upnp": [[TYPE_NETWORK], "UPnP"],
+    "wpa3": [[TYPE_NETWORK], "WPA3"],
 }
 
 PREMIUM_TYPES = {
@@ -38,43 +42,48 @@ SWITCH_TYPES = {**BASIC_TYPES, **PREMIUM_TYPES}
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up a Eero sensor based on a config entry."""
-    conf = hass.data[EERO_DOMAIN][entry.entry_id]
-    conf_network = conf[CONF_NETWORK]
-    conf_eeros = conf[CONF_EEROS]
-    conf_profiles = conf[CONF_PROFILES]
-    conf_clients = conf[CONF_CLIENTS]
-    coordinator = conf[DATA_COORDINATOR]
+    entry = hass.data[EERO_DOMAIN][entry.entry_id]
+    conf_networks = entry[CONF_NETWORKS]
+    conf_eeros = entry[CONF_EEROS]
+    conf_profiles = entry[CONF_PROFILES]
+    conf_clients = entry[CONF_CLIENTS]
+    coordinator = entry[DATA_COORDINATOR]
 
     def get_switches():
         """Get the Eero switches."""
         switches = []
 
-        for variable in SWITCH_TYPES:
-            if variable in PREMIUM_TYPES and not conf_network.premium_status_enabled:
-                continue
-            elif TYPE_NETWORK in SWITCH_TYPES[variable][0]:
-                switches.append(EeroSwitch(coordinator, conf_network.id, None, variable))
+        for network in coordinator.data.networks:
+            if network.id in conf_networks:
+                for variable in SWITCH_TYPES:
+                    if variable in PREMIUM_TYPES and not network.premium_status_active:
+                        continue
+                    elif TYPE_NETWORK in SWITCH_TYPES[variable][0]:
+                        switches.append(EeroSwitch(coordinator, network, None, variable))
 
-        for eero in conf_eeros:
-            for variable in SWITCH_TYPES:
-                if variable in PREMIUM_TYPES and not conf_network.premium_status_enabled:
-                    continue
-                elif TYPE_EERO in SWITCH_TYPES[variable][0]:
-                    switches.append(EeroSwitch(coordinator, conf_network.id, eero.id, variable))
+                for eero in network.eeros:
+                    if eero.id in conf_eeros:
+                        for variable in SWITCH_TYPES:
+                            if variable in PREMIUM_TYPES and not network.premium_status_active:
+                                continue
+                            elif TYPE_EERO in SWITCH_TYPES[variable][0]:
+                                switches.append(EeroSwitch(coordinator, network, eero, variable))
 
-        for profile in conf_profiles:
-            for variable in SWITCH_TYPES:
-                if variable in PREMIUM_TYPES and not conf_network.premium_status_enabled:
-                    continue
-                elif TYPE_PROFILE in SWITCH_TYPES[variable][0]:
-                    switches.append(EeroSwitch(coordinator, conf_network.id, profile.id, variable))
+                for profile in network.profiles:
+                    if profile.id in conf_profiles:
+                        for variable in SWITCH_TYPES:
+                            if variable in PREMIUM_TYPES and not network.premium_status_active:
+                                continue
+                            elif TYPE_PROFILE in SWITCH_TYPES[variable][0]:
+                                switches.append(EeroSwitch(coordinator, network, profile, variable))
 
-        for client in conf_clients:
-            for variable in SWITCH_TYPES:
-                if variable in PREMIUM_TYPES and not conf_network.premium_status_enabled:
-                    continue
-                elif TYPE_CLIENT in SWITCH_TYPES[variable][0]:
-                    switches.append(EeroSwitch(coordinator, conf_network.id, client.id, variable))
+                for client in network.clients:
+                    if client.id in conf_clients:
+                        for variable in SWITCH_TYPES:
+                            if variable in PREMIUM_TYPES and not network.premium_status_active:
+                                continue
+                            elif TYPE_CLIENT in SWITCH_TYPES[variable][0]:
+                                switches.append(EeroSwitch(coordinator, network, client, variable))
 
         return switches
 
@@ -89,10 +98,8 @@ class EeroSwitch(SwitchEntity, EeroEntity):
         """Return the name of the entity."""
         if self.resource.is_client:
             return f"{self.network.name} {self.resource.name_connection_type} {SWITCH_TYPES[self.variable][1]}"
-        elif self.resource.is_eero:
-            return f"{self.network.name} {self.resource.name} Eero {SWITCH_TYPES[self.variable][1]}"
-        elif self.resource.is_profile:
-            return f"{self.network.name} {self.resource.name} Profile {SWITCH_TYPES[self.variable][1]}"
+        elif self.resource.is_eero or self.resource.is_profile:
+            return f"{self.network.name} {self.resource.name} {SWITCH_TYPES[self.variable][1]}"
         return f"{self.resource.name} {SWITCH_TYPES[self.variable][1]}"
 
     @property

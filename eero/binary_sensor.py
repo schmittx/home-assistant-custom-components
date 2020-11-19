@@ -7,10 +7,11 @@ from . import EeroEntity
 from .const import (
     CONF_CLIENTS,
     CONF_EEROS,
-    CONF_NETWORK,
+    CONF_NETWORKS,
     CONF_PROFILES,
     DATA_COORDINATOR,
     DOMAIN as EERO_DOMAIN,
+    TYPE_BEACON,
     TYPE_CLIENT,
     TYPE_EERO,
     TYPE_NETWORK,
@@ -20,6 +21,10 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 BASIC_TYPES = {
+    "dns_caching": [[TYPE_NETWORK], "Local DNS Caching Enabled", None],
+    "ipv6_upstream": [[TYPE_NETWORK], "IPv6 Enabled", None],
+    "dns_caching": [[TYPE_NETWORK], "Local DNS Caching Enabled", None],
+    "thread": [[TYPE_NETWORK], "Thread Enabled", None],
     "update_available": [[TYPE_EERO], "Update Available", None],
 }
 
@@ -28,35 +33,42 @@ BINARY_SENSOR_TYPES = {**BASIC_TYPES}
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up a Eero sensor based on a config entry."""
-    conf = hass.data[EERO_DOMAIN][entry.entry_id]
-    conf_network = conf[CONF_NETWORK]
-    conf_eeros = conf[CONF_EEROS]
-    conf_profiles = conf[CONF_PROFILES]
-    conf_clients = conf[CONF_CLIENTS]
-    coordinator = conf[DATA_COORDINATOR]
+    entry = hass.data[EERO_DOMAIN][entry.entry_id]
+    conf_networks = entry[CONF_NETWORKS]
+    conf_eeros = entry[CONF_EEROS]
+    conf_profiles = entry[CONF_PROFILES]
+    conf_clients = entry[CONF_CLIENTS]
+    coordinator = entry[DATA_COORDINATOR]
 
     def get_binary_sensors():
         """Get the Eero binary sensors."""
         binary_sensors = []
 
-        for variable in BINARY_SENSOR_TYPES:
-            if TYPE_NETWORK in BINARY_SENSOR_TYPES[variable][0]:
-                binary_sensors.append(EeroBinarySensor(coordinator, conf_network.id, None, variable))
+        for network in coordinator.data.networks:
+            if network.id in conf_networks:
+                for variable in BINARY_SENSOR_TYPES:
+                    if TYPE_NETWORK in BINARY_SENSOR_TYPES[variable][0]:
+                        binary_sensors.append(EeroBinarySensor(coordinator, network, None, variable))
 
-        for eero in conf_eeros:
-            for variable in BINARY_SENSOR_TYPES:
-                if TYPE_EERO in BINARY_SENSOR_TYPES[variable][0]:
-                    binary_sensors.append(EeroBinarySensor(coordinator, conf_network.id, eero.id, variable))
+                for eero in network.eeros:
+                    if eero.id in conf_eeros:
+                        for variable in BINARY_SENSOR_TYPES:
+                            if TYPE_EERO in BINARY_SENSOR_TYPES[variable][0]:
+                                binary_sensors.append(EeroBinarySensor(coordinator, network, eero, variable))
+                            if eero.is_beacon and TYPE_BEACON in BINARY_SENSOR_TYPES[variable][0]:
+                                binary_sensors.append(EeroBinarySensor(coordinator, network, eero, variable))
 
-        for profile in conf_profiles:
-            for variable in BINARY_SENSOR_TYPES:
-                if TYPE_PROFILE in BINARY_SENSOR_TYPES[variable][0]:
-                    binary_sensors.append(EeroBinarySensor(coordinator, conf_network.id, profile.id, variable))
+                for profile in network.profiles:
+                    if profile.id in conf_profiles:
+                        for variable in BINARY_SENSOR_TYPES:
+                            if TYPE_PROFILE in BINARY_SENSOR_TYPES[variable][0]:
+                                binary_sensors.append(EeroBinarySensor(coordinator, network, profile, variable))
 
-        for client in conf_clients:
-            for variable in BINARY_SENSOR_TYPES:
-                if TYPE_CLIENT in BINARY_SENSOR_TYPES[variable][0]:
-                    binary_sensors.append(EeroBinarySensor(coordinator, conf_network.id, client.id, variable))
+                for client in network.clients:
+                    if client.id in conf_clients:
+                        for variable in BINARY_SENSOR_TYPES:
+                            if TYPE_CLIENT in BINARY_SENSOR_TYPES[variable][0]:
+                                binary_sensors.append(EeroBinarySensor(coordinator, network, client, variable))
 
         return binary_sensors
 
@@ -71,8 +83,8 @@ class EeroBinarySensor(BinarySensorEntity, EeroEntity):
         """Return the name of the entity."""
         if self.resource.is_client:
             return f"{self.network.name} {self.resource.name_connection_type} {BINARY_SENSOR_TYPES[self.variable][1]}"
-        elif self.resource.is_eero:
-            return f"{self.network.name} {self.resource.name} Eero {BINARY_SENSOR_TYPES[self.variable][1]}"
+        elif self.resource.is_eero or self.resource.is_profile:
+            return f"{self.network.name} {self.resource.name} {BINARY_SENSOR_TYPES[self.variable][1]}"
         return f"{self.resource.name} {BINARY_SENSOR_TYPES[self.variable][1]}"
 
     @property

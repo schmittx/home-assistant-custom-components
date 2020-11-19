@@ -1,0 +1,9 @@
+{
+  "domain": "sony_bravia",
+  "name": "Sony BRAVIA",
+  "documentation": "https://github.com/custom-components/media_player.braviatv_psk",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@gerard33"],
+  "config_flow": true
+}

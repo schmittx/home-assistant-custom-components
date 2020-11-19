@@ -1,0 +1,77 @@
+# Custom Component
+
+set_away_mode:
+  description: Set the away mode for a Nest structure.
+  fields:
+    away_mode:
+      description: (Required) New mode to set. Valid modes are "away" or "home".
+      example: "away"
+    structure:
+      description: (Optional) Name(s) of structure(s) to change. Defaults to all structures if not specified.
+      example: "Apartment"
+
+set_eta:
+  description: Set or update the estimated time of arrival window for a Nest structure.
+  fields:
+    eta:
+      description: (Required) Estimated time of arrival from now.
+      example: "00:10:30"
+    eta_window:
+      description: (Optional) Estimated time of arrival window. Default is 1 minute.
+      example: "00:05:00"
+    trip_id:
+      description: (Optional) Unique ID for the trip. Default is auto-generated using a timestamp.
+      example: "Leave Work"
+    structure:
+      description: (Optional) Name(s) of structure(s) to change. Defaults to all structures if not specified.
+      example: "Apartment"
+
+cancel_eta:
+  description: Cancel an existing estimated time of arrival window for a Nest structure.
+  fields:
+    trip_id:
+      description: (Required) Unique ID for the trip.
+      example: "Leave Work"
+    structure:
+      description: (Optional) Name(s) of structure(s) to change. Defaults to all structures if not specified.
+      example: "Apartment"
+
+set_eco_mode:
+   description: Start or stop Eco mode.
+   fields:
+     eco_mode:
+       description: (Required) Desired Eco mode setting. Must be a boolean.
+       example: "true"
+     entity_id:
+       description: (Optional) Name(s) of entities to change. Defaults to all thermostats if not specified.
+       example: "climate.living_room"
+
+set_fan_timer:
+   description: Set the length of time that the fan should run.
+   fields:
+     duration:
+       description: (Required) Desired length of time (in minutes). Valid values are 15, 30, 45, 60, 120, 240, 480, or 720.
+       example: 30
+     entity_id:
+       description: (Optional) Name(s) of entities to change. Defaults to all thermostats if not specified.
+       example: "climate.living_room"
+
+set_temperature_scale:
+   description: Set the temperature scale to be displayed on the thermostat and Nest.com.
+   fields:
+     temperature_scale:
+       description: (Required) Temperature scale. Valid values are "C" or "F".
+       example: "C"
+     entity_id:
+       description: (Optional) Name(s) of entities to change. Defaults to all thermostats if not specified.
+       example: "climate.living_room"
+
+set_humidifier_mode:
+   description: Set the humidifier mode (if equipped).
+   fields:
+     humidifier_mode:
+       description: (Required) Humidifier mode. Valid values are "auto" or "off".
+       example: "auto"
+     entity_id:
+       description: (Optional) Name(s) of entities to change. Defaults to all thermostats if not specified.
+       example: "climate.living_room"

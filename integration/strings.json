@@ -1,0 +1,36 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "source": "Source",
+                    "name": "Name",
+                    "round": "Round digits",
+                    "unit_prefix": "Units prefix",
+                    "unit_time": "Time units",
+                    "unit": "Unit of measurement",
+                    "method": "Riemann sum method"
+                },
+                "description": "Select the source entity and enter any optional parameters.",
+                "title": "Setup an integration sensor"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "data": {
+                    "source": "Source",
+                    "name": "Name",
+                    "round": "Round digits",
+                    "unit_prefix": "Units prefix",
+                    "unit_time": "Time units",
+                    "unit": "Unit of measurement",
+                    "method": "Riemann sum method"
+                },
+                "description": "Adjust the optional parameters.",
+                "title": "Options for integration sensor"
+            }
+        }
+    }
+}
